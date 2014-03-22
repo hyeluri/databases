@@ -1,0 +1,29 @@
+{
+  "name": "2014-02-databases",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hyeluri/2014-02-databases.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hyeluri/2014-02-databases/issues"
+  },
+  "homepage": "https://github.com/hyeluri/2014-02-databases",
+  "dependencies": {
+    "mysql": "^2.1.1",
+    "express": "^3.5.0",
+    "request": "^2.34.0",
+    "mongojs": "^0.10.1",
+    "chai": "^1.9.1",
+    "q": "~1.0.1",
+    "async": "~0.2.10",
+    "underscore": "~1.6.0"
+  }
+}

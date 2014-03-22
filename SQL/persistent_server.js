@@ -1,21 +1,61 @@
 var mysql = require('mysql');
-/* If the node mysql module is not found on your system, you may
- * need to do an "sudo npm install -g mysql". */
+var q = require('Q');
+var async = require('async');
+var _ = require('underscore');
+
 
 /* You'll need to fill the following out with your mysql username and password.
  * database: "chat" specifies that we're using the database called
  * "chat", which we created by running schema.sql.*/
 var dbConnection = mysql.createConnection({
-  user: "",
-  password: "",
+  user: "root",
+  password: "plantlife",
   database: "chat"
 });
 
 dbConnection.connect();
-/* Now you can make queries to the Mysql database using the
- * dbConnection.query() method.
- * See https://github.com/felixge/node-mysql for more details about
- * using this module.*/
 
-/* You already know how to create an http server from the previous
- * assignment; you can re-use most of that code here. */
+exports.saveMessage = function(message, callback){
+  console.log(message);
+
+  dbConnection.beginTransaction(function(err) {
+    console.log("1");
+    async.parallel([
+        function(cb){
+          console.log("2");
+          dbConnection.query('INSERT INTO users (username) SELECT * FROM (SELECT ?) AS tmp WHERE NOT EXISTS (SELECT username FROM users WHERE username=?) LIMIT 1', [message.username, message.username], cb);
+        },
+        function(cb){
+          console.log("3");
+          dbConnection.query('INSERT INTO room (name) SELECT * FROM (SELECT ?) AS tmp WHERE NOT EXISTS (SELECT name FROM room WHERE name=?) LIMIT 1', [message.roomname, message.roomname], cb);
+        }],
+        function(err, results){
+          console.log("4");
+          if(!err || _.every(err, function(er){return !er;}) ){
+            dbConnection.query('INSERT INTO messages (text, id_users, id_room) VALUES (?, (SELECT id from users where username=?), (SELECT id from room where name=?))', [message.message, message.username, message.roomname], function(err){
+              if (!!err) {
+                console.log("5");
+                dbConnection.rollback(function() {
+                  throw err;
+                });
+              }else{
+                console.log("6");
+                dbConnection.commit(function(err){
+                  if(!!err){
+                    console.log("7");
+                    dbConnection.rollback(function(){
+                      throw err;
+                    });
+                  }
+                  console.log('nice typing Harish');
+                  callback(null,true);
+                });
+              }
+            });
+          }else{
+            console.log(err);
+            callback(err);
+          }
+    });
+  });
+};

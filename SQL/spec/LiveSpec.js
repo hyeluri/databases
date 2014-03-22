@@ -9,15 +9,13 @@ describe("Persistent Node Chat Server", function() {
 
   beforeEach(function(done) {
     dbConnection = mysql.createConnection({
-    /* TODO: Fill this out with your mysql username */
-      user: "",
-    /* and password. */
-      password: "",
+      user: "root",
+      password: "plantlife",
       database: "chat"
     });
     dbConnection.connect();
 
-    var tablename = ""; // TODO: fill this out
+    var tablename = "messages"; 
 
     /* Empty the db table before each test so that multiple tests
      * (or repeated runs of the tests) won't screw each other up: */
@@ -31,7 +29,7 @@ describe("Persistent Node Chat Server", function() {
   it("Should insert posted messages to the DB", function(done) {
     // Post a message to the node chat server:
     request({method: "POST",
-             uri: "http://127.0.0.1:8080/classes/room1",
+             uri: "http://127.0.0.1:3000/classes/messages",
              form: {username: "Valjean",
                     message: "In mercy's name, three days is all I need."}
             },
@@ -41,7 +39,7 @@ describe("Persistent Node Chat Server", function() {
 
               var queryString = "";
               var queryArgs = [];
-              /* TODO: Change the above queryString & queryArgs to match your schema design
+              /* TODoo: Change the above queryString & queryArgs to match your schema design
                * The exact query string and query args to use
                * here depend on the schema you design, so I'll leave
                * them up to you. */
@@ -51,7 +49,7 @@ describe("Persistent Node Chat Server", function() {
                   expect(results.length).toEqual(1);
                   expect(results[0].username).toEqual("Valjean");
                   expect(results[0].message).toEqual("In mercy's name, three days is all I need.");
-                  /* TODO: You will need to change these tests if the
+                  /* TODoo: You will need to change these tests if the
                    * column names in your schema are different from
                    * mine! */
 
@@ -64,7 +62,7 @@ describe("Persistent Node Chat Server", function() {
     // Let's insert a message into the db
     var queryString = "";
     var queryArgs = ["Javert", "Men like you can never change!"];
-    /* TODO - The exact query string and query args to use
+    /* TODoo - The exact query string and query args to use
      * here depend on the schema you design, so I'll leave
      * them up to you. */
 
