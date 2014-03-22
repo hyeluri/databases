@@ -1,0 +1,8 @@
+query for messages for given user:
+
+select * from messages where id_users = (select id from users where username="hariush");
+
+query for all messages:
+
+select messages.text,messages.timeCreated, users.username, room.name from messages,users,room where 
+messages.id_users = users.id and messages.id_room = room.id;

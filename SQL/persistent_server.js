@@ -59,3 +59,55 @@ exports.saveMessage = function(message, callback){
     });
   });
 };
+
+exports.readMessages = function(message, callback){
+  console.log(message);
+  dbConnection.query('select messages.text,messages.timeCreated, users.username, room.name from messages,users,room where messages.id_users = users.id and messages.id_room = room.id;', function(err, rows){
+      if(!!err){
+        console.log("error querying db");
+        callback(err);
+      }else{
+        callback(null,rows);
+      }
+  });
+  // dbConnection.beginTransaction(function(err) {
+  //   console.log("1");
+  //   async.parallel([
+  //       function(cb){
+  //         console.log("2");
+  //         dbConnection.query('INSERT INTO users (username) SELECT * FROM (SELECT ?) AS tmp WHERE NOT EXISTS (SELECT username FROM users WHERE username=?) LIMIT 1', [message.username, message.username], cb);
+  //       },
+  //       function(cb){
+  //         console.log("3");
+  //         dbConnection.query('INSERT INTO room (name) SELECT * FROM (SELECT ?) AS tmp WHERE NOT EXISTS (SELECT name FROM room WHERE name=?) LIMIT 1', [message.roomname, message.roomname], cb);
+  //       }],
+  //       function(err, results){
+  //         console.log("4");
+  //         if(!err || _.every(err, function(er){return !er;}) ){
+  //           dbConnection.query('INSERT INTO messages (text, id_users, id_room) VALUES (?, (SELECT id from users where username=?), (SELECT id from room where name=?))', [message.message, message.username, message.roomname], function(err){
+  //             if (!!err) {
+  //               console.log("5");
+  //               dbConnection.rollback(function() {
+  //                 throw err;
+  //               });
+  //             }else{
+  //               console.log("6");
+  //               dbConnection.commit(function(err){
+  //                 if(!!err){
+  //                   console.log("7");
+  //                   dbConnection.rollback(function(){
+  //                     throw err;
+  //                   });
+  //                 }
+  //                 console.log('nice typing Harish');
+  //                 callback(null,true);
+  //               });
+  //             }
+  //           });
+  //         }else{
+  //           console.log(err);
+  //           callback(err);
+  //         }
+  //   });
+  // });
+};

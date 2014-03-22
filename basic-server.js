@@ -31,7 +31,7 @@ server.listen(app.get('port'));
 
 
 app.all("*", function(req, res, next){
-  res.set(defaultCorsHeaders);http://localhost:4567/
+  res.set(defaultCorsHeaders);
   next();
 });
 
@@ -45,6 +45,12 @@ app.get('/classes/:messages',function(req,res){
     //     res.send(500,"error occurred");
     //   }
     // });
+  dbHelpers.readMessages(null,function(err,results){
+    if(!err){
+      res.send(200, results);
+    }
+  });
+  
 });
 
 app.post('/classes/:messages',function(req,res){
