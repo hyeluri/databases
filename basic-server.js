@@ -4,6 +4,7 @@ var http = require("http");
 var path = require('path');
 var fs = require('fs');
 var dbHelpers = require('./SQL/persistent_server');
+var orm = require('./ORM_Refactor/orm-example');
 
 // var databaseUrl = process.env.mongoURL || "localMongo";
 // var collections = ["messages"];
@@ -35,6 +36,31 @@ app.all("*", function(req, res, next){
   next();
 });
 
+app.post('/classes/bangorang', function(req, res){
+  var message = req.body;
+
+  var newUser = orm.user.findOrCreate({
+    username: message.username
+  }).success( function(newUser){
+    //var userId = newUser.id;
+    // console.log("user: ", newUser.username, " created");
+    var newRoom = orm.room.findOrCreate({
+      roomname: message.roomname
+    }).success(function(newRoom, created){
+      //console.log(newUser, newRoom);
+      var newMessage = orm.message.create({
+        text : message.message,
+        user_id: newUser.id,
+        room_id: newRoom.id
+      });
+    }).error(function(){
+      console.log("some shit broke");
+    });
+
+    res.send(newUser.username);
+  });
+});
+
 app.get('/classes/:messages',function(req,res){
    // res.send(200, {"results": app.messageStorage});
     // db.messages.find({}).sort({createdAt:-1}, function(err,msgResults){
@@ -45,9 +71,9 @@ app.get('/classes/:messages',function(req,res){
     //     res.send(500,"error occurred");
     //   }
     // });
-  dbHelpers.readMessages(null,function(err,results){
+  dbHelpers.readMessages(function(err,results){
     if(!err){
-      res.send(200, results);
+      res.send(200, {"results":results});
     }
   });
   

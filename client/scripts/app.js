@@ -31,9 +31,10 @@
     },
 
     send: function(message) {
+      console.log("message", message);
       $.ajax({
         // always use this url
-        url: 'http://chatzerz-11723.onmodulus.net/classes/messages',
+        url: 'http://127.0.0.1:3000/classes/messages',
         type: 'POST',
         data: JSON.stringify(message),
         contentType: 'application/json',
@@ -51,7 +52,7 @@
       fetch: function() {
         $.ajax({
           // always use this url
-          url: 'http://chatzerz-11723.onmodulus.net/classes/messages',
+          url: 'http://127.0.0.1:3000/classes/messages',
           type: 'GET',
           contentType: 'application/json',
           data: {order: '-createdAt'},
@@ -90,7 +91,7 @@
             }
           }
         }
-      };
+      }
       $("#chatArea").html(app.stringHtml);
       },
 
@@ -119,7 +120,7 @@
       },
 
       sendBTfn: function() {
-        app.msg.text = $("#toSend").val() || "";
+        app.msg.message = $("#toSend").val() || "";
         if(app.username === null) {
           alert('please enter username');
         }
@@ -152,18 +153,18 @@
         }else {
           if(app.rooms[newRoom] === undefined) {
             app.rooms[newRoom] = true;
-            $("#roomSelect").append("<option selected>" +newRoom+ "</option>")
+            $("#roomSelect").append("<option selected>" +newRoom+ "</option>");
           }
-          app.msg.text = $("#toSend").val() || "";
+          app.msg.message = $("#toSend").val() || "";
           app.msg.username = app.username;
           app.msg.roomname = newRoom;
           app.send(app.msg);
         }
-      },
+      }
 
   };
 
   $(function(){
     app.init();
-  })
+  });
 
